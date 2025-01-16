@@ -1,0 +1,47 @@
+```{r}
+path <- "C:/Users/.../..."
+file_name <- "simulated_series.csv"
+sensor_id <- "s1"
+
+df <- read.csv(file.path(path, file_name), header = TRUE)[, c("date_time", sensor_id)]
+colnames(df)[2] <- "metric"
+
+duration_month <- 11
+range_id <- 1:(24 * 30 * duration_month)
+
+test_series <- data.frame(
+  date_times = as.POSIXct(df$date_time, format = "%Y-%m-%d %H:%M:%OS", tz = "UTC")[range_id],
+  rh = df$metric[range_id]
+)
+
+```
+
+```{r}
+# Define parameters
+L <- 1.5
+lambda <- 0.05
+beta <- 0
+p <- 50
+
+# Create CHEWMA object with initial data
+chewma_model <- createCHEWMA(test_series$rh[1:500], test_series$date_times[1:500],
+                             L = L, lambda = lambda, beta = beta, p = p)
+
+# Update CHEWMA with new data
+metric_update <- metric[501:1500]
+date_times_update <- date_times[501:1500]
+
+chewma_model <- update(chewma_model, metric_update, date_times_update)
+
+ph2_data <- chewma_model@phase2_data
+```
+
+### Plot CHEWMA results
+
+```{r}
+chart <- plot_graph(ph2_data$z, ph2_data$timestamps, ph2_data$z_mean, ph2_data$UL, ph2_data$LL, ph2_data$signals)
+```
+
+```{r}
+ts_chart <- plot_graph(ph2_data$obs, ph2_data$timestamps, ph2_data$obs_24h_mean, NA, NA, ph2_data$signals)
+```

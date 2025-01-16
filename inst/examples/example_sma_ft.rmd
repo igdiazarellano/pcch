@@ -1,0 +1,38 @@
+```{r}
+path <- "C:/Users/.../..."
+file_name <- "simulated_series.csv"
+sensor_id <- "s1"
+
+df <- read.csv(file.path(path, file_name), header = TRUE)[, c("date_time", sensor_id)]
+colnames(df)[2] <- "metric"
+
+duration_month <- 11
+range_id <- 1:(24 * 30 * duration_month)
+
+test_series <- data.frame(
+  date_times = as.POSIXct(df$date_time, format = "%Y-%m-%d %H:%M:%OS", tz = "UTC")[range_id],
+  rh = df$metric[range_id]
+)
+
+```
+
+```{r}
+# Define parameters
+win <- 30
+percentil <- 7 
+
+sma_ft_model <- sma_ft(test_series$rh[1:1500], test_series$date_times[1:1500], 
+                       lookback_days = win, obs_per_day = 24, percentil = percentil)
+```
+
+### Plot CHEWMA results
+
+```{r}
+chart <- plot_graph(sma_ft_model$deseasonalized, sma_ft_model$date_time,
+                    0, sma_ft_model$UL, sma_ft_model$LL, sma_ft_model$signals)
+```
+
+```{r}
+ts_chart <- plot_graph(sma_ft_model$metric, sma_ft_model$date_time,
+                       sma_ft_model$rolling_mean, NA, NA, sma_ft_model$signals)
+```

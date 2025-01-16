@@ -1,0 +1,11 @@
+Package: pcch
+Type: Package
+Title: Preventive Conservation Control Framework (provisional name)
+Version: 0.1.0
+Author: Díaz-Arellano, Ignacio
+Maintainer: Díaz-Arellano, Ignacio <igdiaar@upv.es>
+Description: Provides a framework with some methods for preventive conservation of cultural heritage.
+License: LGPL-3
+Encoding: UTF-8
+LazyData: true
+URL: https://github.com/igdiazarellano/pcch
